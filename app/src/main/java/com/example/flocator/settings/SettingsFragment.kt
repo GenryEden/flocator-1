@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.flocator.R
-import com.example.flocator.common.connection.live_data.ConnectionLiveData
 import com.example.flocator.common.receivers.NetworkReceiver
 import com.example.flocator.common.repository.MainRepository
 import com.example.flocator.common.storage.store.user.info.UserInfo
@@ -21,7 +20,6 @@ import com.example.flocator.common.utils.FragmentNavigationUtils
 import com.example.flocator.main.api.ClientAPI
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -105,7 +103,7 @@ class SettingsFragment: Fragment(), SettingsSection {
                         })
                 )
                 compositeDisposable.add(
-                    mainRepository.restApi.getCurrentUserInfo(networkReceiver.networkState)
+                    mainRepository.restApi.getCurrentUserInfo()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
@@ -213,6 +211,19 @@ class SettingsFragment: Fragment(), SettingsSection {
         }
 
 
+        compositeDisposable.add(
+            mainRepository.restApi.getBlockedByCurrentUser()
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        blacklistCnt.text = it.size.toString()
+                    },
+                    {
+                        Log.e("Getting blacklist info error", it.stackTraceToString(), it)
+                    }
+                )
+        )
 
         privacyLine.setOnClickListener {
             FragmentNavigationUtils.openFragment(

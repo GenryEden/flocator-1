@@ -1,5 +1,6 @@
 package com.example.flocator.settings
 
+import com.example.flocator.common.storage.store.user.info.UserInfo
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import retrofit2.http.*
@@ -34,5 +35,5 @@ interface SettingsAPI {
     ): Single<Boolean>
 
     @GET("user/blockedBy/{userId}")
-    fun getBlocked(@Path("userId") userId: Long): Single<List<Long>>
+    fun getBlocked(@Path("userId") userId: Long): Single<List<UserInfo>>
 }

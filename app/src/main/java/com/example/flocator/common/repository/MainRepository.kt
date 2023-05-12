@@ -259,6 +259,14 @@ class MainRepository @Inject constructor(
             }
                 .observeOn(Schedulers.io())
         }
+
+        fun getBlockedByCurrentUser() : Single<List<UserInfo>> {
+            return userDataCache.getUserData().flatMap {
+                settingsAPI.getBlocked(it.userId)
+                    .observeOn(Schedulers.io())
+            }
+                .observeOn(Schedulers.io())
+        }
     }
 
     inner class CacheDatabase {
